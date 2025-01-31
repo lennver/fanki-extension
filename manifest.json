@@ -1,0 +1,33 @@
+{
+  "name": "Anki Card Generator",
+  "description": "Generate Anki Cards from selected text using an LLM (Azure, GitHub, etc.)",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+    "options_ui": {
+      "page": "options.html",
+      "browser_style": true
+    },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "anki-card-generator@example.org",
+      "strict_min_version": "57.0"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
