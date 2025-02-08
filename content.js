@@ -47,11 +47,11 @@ browser.runtime.onMessage.addListener((message) => {
         </label>
         <div style="margin-bottom: 10px;">
           <h3 style="margin: 0 0 5px 0; color: #333;">Question:</h3>
-          <textarea class="qa-question" data-index="${index}" style="width: 100%; min-height: 60px; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">${item.Question}</textarea>
+          <p style="margin: 0; color: #666;">${item.Question}</p>
         </div>
         <div>
           <h3 style="margin: 0 0 5px 0; color: #333;">Answer:</h3>
-          <textarea class="qa-answer" data-index="${index}" style="width: 100%; min-height: 60px; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">${item.Answer}</textarea>
+          <p style="margin: 0; color: #666;">${item.Answer}</p>
         </div>
       </div>
     `).join('');
@@ -104,11 +104,7 @@ browser.runtime.onMessage.addListener((message) => {
       const selectedIndexes = Array.from(modal.querySelectorAll('.qa-checkbox:checked'))
         .map(cb => parseInt(cb.dataset.index));
       
-      const selectedItems = selectedIndexes.map(index => {
-        const question = modal.querySelector(`.qa-question[data-index="${index}"]`).value;
-        const answer = modal.querySelector(`.qa-answer[data-index="${index}"]`).value;
-        return { Question: question, Answer: answer };
-      });
+      const selectedItems = selectedIndexes.map(index => qaItems[index]);
       
       for (const item of selectedItems) {
         const ankiRequest = {
