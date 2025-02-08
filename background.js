@@ -35,13 +35,13 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
       },
       body: JSON.stringify({
         messages: [
-          { role: "system", content: "Format the answer in JSON format with the { \"Question\":\"\", \"Answer\":\"\" } structure." },
-          { role: "user", content: `Create a question and answer pair for an Anki card. Try to make the question touch on concepts if available possible. Base it on the following text: ${userText}` }
+          { role: "system", content: "Act as a subject matter teacher for grown ups. You help out by creating ANKI flash cards that your students use for spaced repetition to learn their subjects better and more long term. Always format the answer in JSON format with the [{ \"Question\":\"\", \"Answer\":\"\" }] structure." },
+          { role: "user", content: `Create three question and answer pair for an Anki card. Make the question touch on concepts if possible. The following is what the user need help creating flashcards for: ${userText}` }
         ],
         temperature: 1.0,
         top_p: 1.0,
-        max_tokens: 1000,
-        model: "Llama-3.3-70B-Instruct"
+        max_tokens: 2000,
+        model: "gpt-4o"
       })
     });
     
@@ -58,13 +58,10 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
     try {
       const qaContent = await handleResponse(result);
       
-      // Send message to content script to show modal
+      // Send message to content script to show modal with all Q&A pairs
       await browser.tabs.sendMessage(tab.id, {
         type: 'showQAModal',
-        data: {
-          question: qaContent.Question,
-          answer: qaContent.Answer
-        }
+        data: qaContent
       });
     } catch (error) {
       console.error('Failed to handle response:', error);
@@ -74,21 +71,27 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
 async function handleResponse(response) {
   try {
-    // Clean up the response by taking only the first valid JSON object
+    // Clean up the response and parse the array of Q&A pairs
     const cleanResponse = response.choices[0].message.content.trim();
-    const jsonMatch = cleanResponse.match(/\{[^]*\}/);
+    const jsonMatch = cleanResponse.match(/\[[^]*\]/);
     if (!jsonMatch) {
-      throw new Error('No valid JSON found in response');
+      throw new Error('No valid JSON array found in response');
     }
     const jsonStr = jsonMatch[0];
-    const cardData = JSON.parse(jsonStr);
+    const cardDataArray = JSON.parse(jsonStr);
     
-    // Validate the required fields
-    if (!cardData.Question || !cardData.Answer) {
-      throw new Error('Missing required fields in response');
+    // Validate the required fields for each card
+    if (!Array.isArray(cardDataArray)) {
+      throw new Error('Response is not an array of cards');
     }
     
-    return cardData;
+    for (const card of cardDataArray) {
+      if (!card.Question || !card.Answer) {
+        throw new Error('Missing required fields in one or more cards');
+      }
+    }
+    
+    return cardDataArray;
   } catch (error) {
     console.error('Error parsing response:', error);
     throw error;
