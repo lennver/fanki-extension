@@ -8,16 +8,17 @@
     "activeTab",
     "tabs",
     "storage",
-    "http://localhost/*"
+    "http://localhost/*",
+    "debug"
   ],
   "background": {
     "scripts": ["background.js"]
   },
 
-    "options_ui": {
-      "page": "options.html",
-      "browser_style": true
-    },
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  },
 
   "browser_specific_settings": {
     "gecko": {
@@ -25,6 +26,7 @@
       "strict_min_version": "57.0"
     }
   },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

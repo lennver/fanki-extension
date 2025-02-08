@@ -1,0 +1,29 @@
+# Firefox debug profile
+debug-profile/
+
+# Build artifacts
+web-ext-artifacts/
+*.xpi
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+
+# Development files
+*.log
+*.bak
+*.tmp
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.vscode/*
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env

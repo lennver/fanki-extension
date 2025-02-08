@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Firefox Extension",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "addonPath": "${workspaceFolder}",
+            "firefoxArgs": [
+                "-profile",
+                "${workspaceFolder}/debug-profile"
+                ,"-start-debugger-server 6000" 
+                ,"-P \"debug-profile\""
+            ],
+            "firefox.port": 6000
+        }
+    ]
+}
